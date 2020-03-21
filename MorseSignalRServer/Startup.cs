@@ -46,7 +46,7 @@ namespace MorseSignalRServer
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                //endpoints.MapControllers();
                 endpoints.MapHub<ChannelHub>("/Channel");
             });
         }
