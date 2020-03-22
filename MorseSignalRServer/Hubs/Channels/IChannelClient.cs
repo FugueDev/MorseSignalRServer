@@ -8,9 +8,11 @@ namespace MorseSignalRServer.Hubs.Channels
 {
     public interface IChannelClient
     {
-        Task ReceiveMessage(string user, string message);
+        Task ReceiveMessage(ChannelMessageDto channelMessage);
+        Task UserJoinedChannel(ChannelDto group);
+        Task UserLeftChannel(ChannelDto group);
+        Task UsersInGroup(int numberOfUsers);
         Task UserJoinedChannel(UserJoinedChannelDto dto);
         Task UserLeftChannel(UserLeftChannelDto dto);
-        Task UsersInGroup(int numberOfUsers);
     }
 }
