@@ -11,8 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MorseSignalRServer.Hubs;
-using MorseSignalRServer.Hubs.Lobby;
-using MorseSignalRServer.Hubs.Room;
+using MorseSignalRServer.Hubs.Channels;
 
 namespace MorseSignalRServer
 {
@@ -49,8 +48,7 @@ namespace MorseSignalRServer
             app.UseEndpoints(endpoints =>
             {
                 //endpoints.MapControllers();
-                endpoints.MapHub<RoomHub>("/Room");
-                endpoints.MapHub<LobbyHub>("/Lobby");
+                endpoints.MapHub<ChannelHub>("/Channel");
             });
         }
     }
