@@ -1,17 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using MorseSignalRServer.Hubs;
-using MorseSignalRServer.Hubs.Channels;
+using MorseSignalRServer.Hubs.Lobby;
+using MorseSignalRServer.Hubs.Room;
 
 namespace MorseSignalRServer
 {
@@ -48,7 +41,8 @@ namespace MorseSignalRServer
             app.UseEndpoints(endpoints =>
             {
                 //endpoints.MapControllers();
-                endpoints.MapHub<ChannelHub>("/Channel");
+                endpoints.MapHub<RoomHub>("/Room");
+                endpoints.MapHub<LobbyHub>("/Lobby");
             });
         }
     }

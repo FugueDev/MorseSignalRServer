@@ -1,8 +1,7 @@
 namespace MorseSignalRServer.Models
 {
-    public class ChannelMessageDto
+    public class RoomMessageDto
     {
-        public string ChannelName { get; }
         public string Message { get; }
         public string SenderName { get; }
     }
