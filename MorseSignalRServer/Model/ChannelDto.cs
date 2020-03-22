@@ -12,7 +12,6 @@ namespace MorseSignalRServer.Model
     }
     public class ChannelMessageDto
     {
-        public string ChannelName { get; set; }
         public string Message { get; set; }
         public string SenderName { get; set; }
     }

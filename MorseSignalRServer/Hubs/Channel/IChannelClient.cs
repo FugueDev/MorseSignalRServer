@@ -8,7 +8,7 @@ namespace MorseSignalRServer.Hubs.Interfaces
 {
     public interface IChannelClient
     {
-        Task ReceiveMessage(string user, string message);
+        Task ReceiveMessage(ChannelMessageDto channelMessage);
 
         Task UserJoinedChannel(ChannelDto group);
 

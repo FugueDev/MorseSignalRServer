@@ -23,8 +23,12 @@ namespace MorseSignalRServer.Hubs
         [HubMethodName("Send")]
         public async Task SendMessage(ChannelMessageDto channelDto)
         {
-            await Clients.OthersInGroup(channelDto.ChannelName)
-                .ReceiveMessage(channelDto.SenderName, channelDto.Message);
+            var result = ChannelHandler.ChannelDictionary.TryGetValue(Context.ConnectionId, out var channelName);
+            if (result)
+            {
+                await Clients.OthersInGroup(channelName)
+                    .ReceiveMessage(channelDto);
+            }
         }
 
         [HubMethodName("Join")]
@@ -36,6 +40,7 @@ namespace MorseSignalRServer.Hubs
             await Clients.OthersInGroup(channelDto.ChannelName).UserJoinedChannel(channelDto);
             await Clients.Others.UsersInGroup(ChannelHandler.NumberOfUsersInChannel(channelDto.ChannelName));
         }
+
         [HubMethodName("Leave")]
         public async Task LeaveChannel(ChannelDto channelDto)
         {
@@ -70,6 +75,7 @@ namespace MorseSignalRServer.Hubs
                     {ChannelName = roomName, Id = Context.ConnectionId});
                 await Clients.Others.UsersInGroup(ChannelHandler.NumberOfUsersInChannel(roomName));
             }
+
             await base.OnDisconnectedAsync(exception);
         }
     }
