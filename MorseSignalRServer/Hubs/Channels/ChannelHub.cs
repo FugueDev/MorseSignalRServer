@@ -1,23 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using MorseSignalRServer.Hubs.Interfaces;
-using MorseSignalRServer.Model;
+using MorseSignalRServer.Models;
 
-namespace MorseSignalRServer.Hubs
+namespace MorseSignalRServer.Hubs.Channels
 {
-    internal static class ChannelHandler
-    {
-        public static Dictionary<string, string> ChannelDictionary = new Dictionary<string, string>();
-
-        public static int NumberOfUsersInChannel(string channelName)
-        {
-            return ChannelDictionary.Count(x => x.Value == channelName);
-        }
-    }
-
     public class ChannelHub : Hub<IChannelClient>
     {
         [HubMethodName("Send")]
@@ -34,20 +22,21 @@ namespace MorseSignalRServer.Hubs
         [HubMethodName("Join")]
         public async Task JoinChannel(ChannelDto channelDto)
         {
-            channelDto.Id = Context.ConnectionId;
-            ChannelHandler.ChannelDictionary.Add(channelDto.Id, channelDto.ChannelName);
+            ChannelHandler.ChannelDictionary.Add(Context.ConnectionId, channelDto.ChannelName);
+
             await Groups.AddToGroupAsync(Context.ConnectionId, channelDto.ChannelName);
-            await Clients.OthersInGroup(channelDto.ChannelName).UserJoinedChannel(channelDto);
+
+            await Clients.OthersInGroup(channelDto.ChannelName).UserJoinedChannel(new UserJoinedChannelDto(channelDto.ChannelName, channelDto.Id));
+
             await Clients.Others.UsersInGroup(ChannelHandler.NumberOfUsersInChannel(channelDto.ChannelName));
         }
 
         [HubMethodName("Leave")]
         public async Task LeaveChannel(ChannelDto channelDto)
         {
-            channelDto.Id = Context.ConnectionId;
-            ChannelHandler.ChannelDictionary.Remove(channelDto.Id);
+            ChannelHandler.ChannelDictionary.Remove(Context.ConnectionId);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, channelDto.ChannelName);
-            await Clients.OthersInGroup(channelDto.Id).UserLeftChannel(channelDto);
+            await Clients.OthersInGroup(Context.ConnectionId).UserLeftChannel(new UserLeftChannelDto(channelDto.ChannelName, Context.ConnectionId));
             await Clients.Others.UsersInGroup(ChannelHandler.NumberOfUsersInChannel(channelDto.ChannelName));
         }
 
@@ -57,8 +46,10 @@ namespace MorseSignalRServer.Hubs
             if (result)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-                await Clients.Caller.UserJoinedChannel(new ChannelDto
-                    {ChannelName = roomName, Id = Context.ConnectionId});
+
+                await Clients.Caller.UserJoinedChannel(new UserJoinedChannelDto(roomName,
+                                                                                Context.ConnectionId));
+
                 await Clients.Others.UsersInGroup(ChannelHandler.NumberOfUsersInChannel(roomName));
             }
 
@@ -71,8 +62,7 @@ namespace MorseSignalRServer.Hubs
             if (result)
             {
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
-                await Clients.Others.UserLeftChannel(new ChannelDto
-                    {ChannelName = roomName, Id = Context.ConnectionId});
+                await Clients.Others.UserLeftChannel(new UserLeftChannelDto(roomName, Context.ConnectionId));
                 await Clients.Others.UsersInGroup(ChannelHandler.NumberOfUsersInChannel(roomName));
             }
 
@@ -80,3 +70,4 @@ namespace MorseSignalRServer.Hubs
         }
     }
 }
+
