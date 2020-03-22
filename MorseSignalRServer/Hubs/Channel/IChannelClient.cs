@@ -10,8 +10,9 @@ namespace MorseSignalRServer.Hubs.Interfaces
     {
         Task ReceiveMessage(string user, string message);
 
-        Task UserJoinedGroup(ChannelDto group);
+        Task UserJoinedChannel(ChannelDto group);
 
-        Task UserLeftGroup(ChannelDto group);
+        Task UserLeftChannel(ChannelDto group);
+        Task UsersInGroup(int numberOfUsers);
     }
 }
