@@ -1,8 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MorseSignalRServer.Rewrite;
+using MorseSignalRServer.Config;
 using MorseSignalRServer.Hubs.Lobby;
 using MorseSignalRServer.Hubs.Room;
 
@@ -10,28 +15,32 @@ namespace MorseSignalRServer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddSignalR();
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAllHeaders",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                    });
+            // Load Kestrel configurations from appsettings
+            services.Configure<KestrelServerOptions>(
+                Configuration.GetSection("Kestrel"));
+
+            // Forwarding of X-headers (For when hosted behind an inverse proxy)
+            services.Configure<ForwardedHeadersOptions>(options => {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
             });
+ 
+            services.AddSignalR();
+
+            services.AddCors(CorsConfig.Configure);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,24 +49,25 @@ namespace MorseSignalRServer
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                
+                app.UseCors(CorsConfig.AllowAllOriginsCorsPolicy);
+            } else {
+                // HTTPS redirect rule for runing behind an inverse proxy
+                var options = new RewriteOptions()
+                    .AddRedirectToProxiedHttps()
+                    .AddRedirect("(.*)/$", "$1");  // remove trailing slash
+
+                app.UseRewriter(options);
+
+                app.UseCors(CorsConfig.AllowKnownClientOriginsCorsPolicy);
             }
 
-            app.UseHttpsRedirection();
+            app.UseForwardedHeaders();
 
             app.UseRouting();
 
-            app.UseAuthorization();
-            app.UseCors(builder =>
-                    builder
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                //.AllowCredentials()
-            );
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllers();
-                app.UseCors("AllowAllHeaders");
                 endpoints.MapHub<RoomHub>("/Room");
                 endpoints.MapHub<LobbyHub>("/Lobby");
             });
