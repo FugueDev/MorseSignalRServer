@@ -50,7 +50,7 @@ namespace MorseSignalRServer
             {
                 app.UseDeveloperExceptionPage();
                 
-                app.UseCors(CorsConfig.AllowAllOriginsCorsPolicy);
+                // app.UseCors(CorsConfig.AllowKnownLocalClientOriginsCorsPolicy);
             } else {
                 // HTTPS redirect rule for runing behind an inverse proxy
                 var options = new RewriteOptions()
@@ -65,6 +65,8 @@ namespace MorseSignalRServer
             app.UseForwardedHeaders();
 
             app.UseRouting();
+
+            app.UseCors(CorsConfig.AllowKnownLocalClientOriginsCorsPolicy);
 
             app.UseEndpoints(endpoints =>
             {
