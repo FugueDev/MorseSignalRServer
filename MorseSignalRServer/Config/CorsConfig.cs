@@ -20,8 +20,8 @@ namespace MorseSignalRServer.Config {
                     builder.AllowAnyMethod()
                         .AllowAnyHeader()
                         .WithOrigins(
-                            "http://localhost:8080",
-                            "https://localhost:8081")
+                            "http://localhost:8008",
+                            "https://localhost:8009")
                         .AllowCredentials();
                 });
 
