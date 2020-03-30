@@ -2,7 +2,7 @@ namespace MorseSignalRServer.Models
 {
     public class RoomMessageDto
     {
-        public string Message { get; }
-        public string SenderName { get; }
+        public string Message { get; set; }
+        public string SenderName { get; set; }
     }
 }
