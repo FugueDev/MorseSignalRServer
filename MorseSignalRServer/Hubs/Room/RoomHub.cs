@@ -47,7 +47,12 @@ namespace MorseSignalRServer.Hubs.Room
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             if (UserHandler.RoomConnectedIds.ContainsKey(Context.ConnectionId))
+            {
+                var isInRoom = UserHandler.RoomConnectedIds.TryGetValue(Context.ConnectionId, out var roomName);
+                if (isInRoom)
+                    await Clients.OthersInGroup(roomName).UserLeftRoom(null);
                 UserHandler.RoomConnectedIds.Remove(Context.ConnectionId);
+            }
             await base.OnDisconnectedAsync(exception);
         }
     }
