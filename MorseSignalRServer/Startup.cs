@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MorseSignalRServer.Rewrite;
 using MorseSignalRServer.Config;
+using MorseSignalRServer.Hubs.Channel;
 using MorseSignalRServer.Hubs.Lobby;
 using MorseSignalRServer.Hubs.Room;
 
@@ -70,6 +71,7 @@ namespace MorseSignalRServer
             {
                 endpoints.MapHub<RoomHub>("/Room");
                 endpoints.MapHub<LobbyHub>("/Lobby");
+                endpoints.MapHub<ChannelHub>("/Channel");
             });
         }
     }

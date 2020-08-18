@@ -1,7 +1,7 @@
 namespace MorseSignalRServer.Models
 {
-    public class UsersInChannel
+    public class UsersInChannelDto
     {
-        
+        public int NumberOfUsers { get; set; }
     }
 }

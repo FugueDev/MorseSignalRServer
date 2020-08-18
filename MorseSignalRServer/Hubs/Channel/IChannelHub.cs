@@ -1,13 +1,15 @@
 ﻿using System.Threading.Tasks;
 using MorseSignalRServer.Models;
 
-namespace MorseSignalRServer.Hubs.Room
+namespace MorseSignalRServer.Hubs.Channel
 {
-    public interface IRoomHub
+    public interface IChannelHub
     {
         Task ReceiveMessage(RoomMessageDto roomMessage);
         Task UserLeftRoom(UserLeftRoomDto room);
         Task UserJoinedRoom(UserJoinedRoomDto room);
-    
+
+        Task UsersInRoom(UsersInChannelDto usersDto);
+
     }
 }
