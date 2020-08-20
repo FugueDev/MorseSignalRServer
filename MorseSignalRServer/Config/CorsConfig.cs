@@ -22,6 +22,7 @@ namespace MorseSignalRServer.Config {
                         .WithOrigins(
                             "http://localhost:8008",
                             "http://localhost:8080",
+                            "http://localhost:80",
                             "https://localhost:8009")
                         .AllowCredentials();
                 });
@@ -32,8 +33,8 @@ namespace MorseSignalRServer.Config {
                     builder.AllowAnyMethod()
                         .AllowAnyHeader()
                         .WithOrigins(
-                            "https://baards-vue-client.com",
-                            "https://vaagens-react-client.com")
+                            "http://morsechat.io",
+                            "https://morsechat.io")
                         .AllowCredentials();
                 });
         }
