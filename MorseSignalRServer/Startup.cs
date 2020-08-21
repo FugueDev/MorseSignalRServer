@@ -43,7 +43,15 @@ namespace MorseSignalRServer
  
             services.AddSignalR();
 
-            services.AddCors(CorsConfig.Configure);
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+                builder =>
+                {
+                    builder.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetIsOriginAllowed((host) => true)
+                        .AllowCredentials();
+                }));
+            // services.AddCors(CorsConfig.Configure);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,11 +75,10 @@ namespace MorseSignalRServer
             }
             */
             
-            app.UseCors();
+            app.UseCors("CorsPolicy");
          //   app.UseForwardedHeaders();
 
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<RoomHub>("/Room");
