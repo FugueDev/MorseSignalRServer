@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -37,6 +38,7 @@ namespace MorseSignalRServer
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
                 options.KnownNetworks.Clear();
                 options.KnownProxies.Clear();
+                options.KnownProxies.Add(IPAddress.Parse("10.0.0.0"));
             });
  
             services.AddSignalR();
