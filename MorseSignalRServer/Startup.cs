@@ -51,19 +51,19 @@ namespace MorseSignalRServer
                         .SetIsOriginAllowed((host) => true)
                         .AllowCredentials();
                 }));
-            // services.AddCors(CorsConfig.Configure);
+            services.AddCors(CorsConfig.Configure);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            /*
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
+            
+        //    if (env.IsDevelopment())
+        //    {
+       //         app.UseDeveloperExceptionPage();
                 
-                app.UseCors(CorsConfig.AllowKnownLocalClientOriginsCorsPolicy);
-            } else {
+         //       app.UseCors(CorsConfig.AllowKnownLocalClientOriginsCorsPolicy);
+       //     } else {
                 // HTTPS redirect rule for runing behind an inverse proxy
                 var options = new RewriteOptions()
                     .AddRedirectToProxiedHttps()
@@ -72,11 +72,11 @@ namespace MorseSignalRServer
                 app.UseRewriter(options);
 
                 app.UseCors(CorsConfig.AllowKnownClientOriginsCorsPolicy);
-            }
-            */
+        //    }
             
-            app.UseCors("CorsPolicy");
-         //   app.UseForwardedHeaders();
+            
+            //app.UseCors("CorsPolicy");
+           app.UseForwardedHeaders();
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>
