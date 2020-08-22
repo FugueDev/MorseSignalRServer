@@ -37,9 +37,6 @@ namespace MorseSignalRServer
             // Forwarding of X-headers (For when hosted behind an inverse proxy)
             services.Configure<ForwardedHeadersOptions>(options => {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
-                options.KnownProxies.Add(IPAddress.Parse("10.0.0.0"));
             });
  
             services.AddSignalR();
