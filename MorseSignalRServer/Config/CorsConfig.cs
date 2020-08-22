@@ -32,10 +32,9 @@ namespace MorseSignalRServer.Config {
                 {
                     builder.AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowAnyOrigin()
-                        //.WithOrigins(
-                          //  "http://morsechat.io",
-                            //"https://morsechat.io")
+                        .WithOrigins(
+                            "http://morsechat.io",
+                            "https://morsechat.io")
                         .AllowCredentials();
                 });
         }
