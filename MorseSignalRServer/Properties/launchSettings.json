@@ -10,18 +10,17 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "MorseSignalRServer": {
       "commandName": "Project",
-      "launchBrowser": false,
       "environmentVariables": {
+        "KeyASPNETCORE_ENVIRONMENT": "Production",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:1337;http://localhost:1338"
+      "applicationUrl": "https://localhost:8090;http://localhost:8080"
     }
   }
 }
