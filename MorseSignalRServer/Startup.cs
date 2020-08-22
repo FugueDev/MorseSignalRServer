@@ -1,6 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -42,15 +43,7 @@ namespace MorseSignalRServer
             });
  
             services.AddSignalR();
-
-            services.AddCors(options => options.AddPolicy("CorsPolicy",
-                builder =>
-                {
-                    builder.AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .SetIsOriginAllowed((host) => true)
-                        .AllowCredentials();
-                }));
+            
             services.AddCors(CorsConfig.Configure);
         }
 
@@ -58,12 +51,12 @@ namespace MorseSignalRServer
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             
-        //    if (env.IsDevelopment())
-        //    {
-       //         app.UseDeveloperExceptionPage();
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
                 
-         //       app.UseCors(CorsConfig.AllowKnownLocalClientOriginsCorsPolicy);
-       //     } else {
+            app.UseCors(CorsConfig.AllowKnownLocalClientOriginsCorsPolicy);
+        } else {
                 // HTTPS redirect rule for runing behind an inverse proxy
                 var options = new RewriteOptions()
                     .AddRedirectToProxiedHttps()
@@ -72,10 +65,10 @@ namespace MorseSignalRServer
                 app.UseRewriter(options);
 
                 app.UseCors(CorsConfig.AllowKnownClientOriginsCorsPolicy);
-        //    }
+        }
             
             
-            //app.UseCors("CorsPolicy");
+     
            app.UseForwardedHeaders();
 
             app.UseRouting();
@@ -84,6 +77,7 @@ namespace MorseSignalRServer
                 endpoints.MapHub<RoomHub>("/Room");
                 endpoints.MapHub<LobbyHub>("/Lobby");
                 endpoints.MapHub<ChannelHub>("/Channel");
+                endpoints.MapGet("/test", async context => { await context.Response.WriteAsync("Hello World!"); });
             });
         }
     }
