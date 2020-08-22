@@ -34,6 +34,7 @@ namespace MorseSignalRServer.Config {
                         .AllowAnyHeader()
                         .WithOrigins(
                             "http://morsechat.io",
+                            "http://localhost:80",
                             "https://morsechat.io")
                         .AllowCredentials();
                 });

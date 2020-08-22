@@ -61,7 +61,8 @@ namespace MorseSignalRServer
 
                 app.UseRewriter(options);
 
-                app.UseCors(CorsConfig.AllowKnownClientOriginsCorsPolicy);
+                // app.UseCors(CorsConfig.AllowKnownClientOriginsCorsPolicy);
+                app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
         }
             
             
